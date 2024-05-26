@@ -19,6 +19,7 @@ type Data struct {
 	MinNumber int64
 	MaxNumber int64
 	OutPut    string
+	Kill      bool
 }
 
 var problem string
@@ -48,6 +49,7 @@ to quickly create a Cobra application.`,
 			MinNumber: minNumber,
 			MaxNumber: maxNumber,
 			OutPut:    outPut,
+			Kill:      false,
 		}
 
 		jsonData, err := json.Marshal(data)
@@ -73,6 +75,20 @@ to quickly create a Cobra application.`,
 		}
 
 		fmt.Println(string(jsonData))
+
+		buffer := make([]byte, 1024)
+
+		n, err := conn.Read(buffer)
+
+		if err != nil {
+
+			fmt.Println("Error", err)
+			return nil
+
+		}
+
+		response := string(buffer[:n])
+		fmt.Println("Respuesta del servidor:", response)
 
 		return nil
 
