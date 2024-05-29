@@ -50,7 +50,3 @@ class Socket():
             except Exception as e:
                 print(f"Error general: {e}")
                 traceback.print_exc()
-
-
-if __name__ == "__main__":
-    Socket.start_server()

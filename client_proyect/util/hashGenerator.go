@@ -3,7 +3,6 @@ package util
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 )
 
 func HashPassword(password string) string {
@@ -17,9 +16,6 @@ func HashPassword(password string) string {
 }
 
 func CheckPasswordHash(password string, hash string) bool {
-
-	fmt.Println("input contrasena:", HashPassword(password))
-	fmt.Println("actual contrasena:", hash)
 
 	return HashPassword(password) == hash
 
