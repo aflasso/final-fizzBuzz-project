@@ -4,10 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"client_proyect/util"
 	"encoding/json"
 	"fmt"
 	"log"
-	"net"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -56,42 +56,38 @@ to quickly create a Cobra application.`,
 
 		if err != nil {
 
-			log.Fatalf("Error", err)
+			log.Fatalf("error: %v", err)
 
 		}
 
-		conn, err := net.Dial("tcp", "localhost:65432")
+		port := "localhost:65432"
+
+		conn, err := util.Start_server(port)
 
 		if err != nil {
 
-			return fmt.Errorf("Error connecting to server not able to connect")
+			return fmt.Errorf("error connecting to server not able to connect")
 		}
 		defer conn.Close()
 
-		_, err = conn.Write(jsonData)
+		err = util.Send_data(jsonData, conn)
 
 		if err != nil {
-			return fmt.Errorf("Error sendind data: %v", err)
+			return fmt.Errorf("error sendind data: %v", err)
 		}
 
-		fmt.Println(string(jsonData))
-
-		buffer := make([]byte, 1024)
-
-		n, err := conn.Read(buffer)
+		data_recived, err := util.Recive_data(conn)
 
 		if err != nil {
 
-			fmt.Println("Error", err)
-			return nil
+			return fmt.Errorf("error: %v", err)
 
 		}
 
-		response := string(buffer[:n])
+		response := string(data_recived)
 		fmt.Println("Respuesta del servidor:", response)
 
 		return nil
-
 	},
 }
 

@@ -36,7 +36,8 @@ class Socket():
                             connection.sendall(json.dumps(response).encode('utf-8'))
                             flag = False
                         
-                        connection.sendall(data)
+                        else:
+                            connection.sendall(data)
 
                         data = connection.recv(1024)
                         
