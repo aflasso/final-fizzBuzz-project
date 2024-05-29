@@ -1,6 +1,7 @@
 import json
 import socket as sk
 import traceback
+import requests
 
 class Socket():
 
@@ -32,12 +33,15 @@ class Socket():
                         recived_json = json.loads(data.decode('utf-8'))
                         
                         if recived_json['Kill']:
-                            response = {"message": "zzz"}
-                            connection.sendall(json.dumps(response).encode('utf-8'))
+
+                            response_server = requests.get('http://localhost:5000/shutdown')
+
+                            response_socket = {"message": "zzz"}
+                            connection.sendall(json.dumps(response_socket).encode('utf-8'))
                             flag = False
                         
                         else:
-                            connection.sendall(data)
+                            numbers_server = requests.post('http://localhost:5000/numbers', json=recived_json)
 
                         data = connection.recv(1024)
                         
