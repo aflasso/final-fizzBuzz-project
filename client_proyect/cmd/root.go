@@ -110,9 +110,9 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringVarP(&problem, "problem", "p", "", "Problem to be resolved")
-	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 10, "amount of numbers")
-	rootCmd.Flags().Int64VarP(&minNumber, "min", "x", 10, "minimum number")
-	rootCmd.Flags().Int64VarP(&maxNumber, "max", "y", 10, "maximum number")
+	rootCmd.Flags().StringVarP(&problem, "problem", "p", "FizzBuzz", "Problem to be resolved")
+	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 1000, "amount of numbers")
+	rootCmd.Flags().Int64VarP(&minNumber, "min", "x", 0, "minimum number")
+	rootCmd.Flags().Int64VarP(&maxNumber, "max", "y", 100, "maximum number")
 	rootCmd.Flags().StringVarP(&outPut, "output", "o", "", "output file")
 }
