@@ -68,7 +68,6 @@ to quickly create a Cobra application.`,
 
 			return fmt.Errorf("error connecting to server not able to connect")
 		}
-		defer conn.Close()
 
 		err = util.Send_data(jsonData, conn)
 
@@ -87,6 +86,7 @@ to quickly create a Cobra application.`,
 		response := string(data_recived)
 		fmt.Println("Respuesta del servidor:", response)
 
+		conn.Close()
 		return nil
 	},
 }
