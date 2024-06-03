@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,10 @@ type Data struct {
 	MaxNumber int64
 	OutPut    string
 	Kill      bool
+}
+
+type Result struct {
+	Result []string
 }
 
 var problem string
@@ -68,6 +73,7 @@ to quickly create a Cobra application.`,
 
 			return fmt.Errorf("error connecting to server not able to connect")
 		}
+		defer conn.Close()
 
 		err = util.Send_data(jsonData, conn)
 
@@ -83,10 +89,26 @@ to quickly create a Cobra application.`,
 
 		}
 
-		response := string(data_recived)
-		fmt.Println("Respuesta del servidor:", response)
+		var result Result
 
-		conn.Close()
+		err = json.Unmarshal(data_recived, &result)
+
+		fmt.Println(string(data_recived))
+
+		if err != nil {
+			return fmt.Errorf("error deserializing JSON: %v", err)
+		}
+
+		fmt.Printf("Deserialized JSON: %+v\n", result)
+
+		fmt.Println(result.Result)
+
+		for _, item := range result.Result {
+			fmt.Println(item)
+			fmt.Println("Tipo de myVar:", reflect.TypeOf(item))
+
+		}
+
 		return nil
 	},
 }
@@ -111,7 +133,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringVarP(&problem, "problem", "p", "FizzBuzz", "Problem to be resolved")
-	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 1000, "amount of numbers")
+	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 10, "amount of numbers")
 	rootCmd.Flags().Int64VarP(&minNumber, "min", "x", 0, "minimum number")
 	rootCmd.Flags().Int64VarP(&maxNumber, "max", "y", 100, "maximum number")
 	rootCmd.Flags().StringVarP(&outPut, "output", "o", "", "output file")

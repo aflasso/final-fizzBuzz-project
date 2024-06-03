@@ -39,17 +39,19 @@ def create_app(test_config=None):
     @app.route("/numbers", methods=("POST",))
     def numbers():
         request_data = request.json
-        key = base64.b64decode(request_data["key"])
+        encrypted_session_key = request_data["encrypted_session_key"]
         encrypted_data = request_data["encrypted_data"]
 
         try:
 
-            decrypted_data = cy.decrypt_data(encrypted_data, key)
+            session_key = cy.decrypt_data(encrypted_session_key, cy.get_private_server_key())
+
+            decrypted_data = cy.decrypt_with_session_key(encrypted_data, session_key)
 
             json_data = json.loads(decrypted_data)
 
-            print(encrypted_data)
-            print(json_data)
+            # print(encrypted_data)
+            # print(json_data)
             
             desc_random = random.choice((0,1))
             random_numbers = None
@@ -59,15 +61,25 @@ def create_app(test_config=None):
             else:
                 distribution = UniformRandomDistribution()
 
-            random_numbers = distribution.get_numbers(json_data["MinNumber"], json_data["MaxNumber"], json_data["CantData"])
+            mean = (json_data["MinNumber"] + json_data["MaxNumber"])/2
 
+            scale = abs(json_data["MaxNumber"] - json_data["MinNumber"]) / 6
+
+            random_numbers = distribution.get_numbers(mean, scale, json_data["CantData"])
+
+            encrypted_session_key = cy.get_encrpyted_session_key(session_key)
+
+            
             response_json = {"Numbers": random_numbers}
 
             response_data = json.dumps(response_json)
 
-            encrypted_response_data = cy.encrypt_data(response_data, key)
+            encrypted_response_data = cy.encrypt_with_session_key(response_data, session_key)
 
-            return jsonify({"encrypted_data":encrypted_response_data})
+            return jsonify({
+                            "encrypted_session_key": encrypted_session_key,
+                            "encrypted_data": encrypted_response_data
+                        })
         
         except Exception as e:
             return str(e), 400
