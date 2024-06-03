@@ -46,12 +46,13 @@ to quickly create a Cobra application.`,
 		}
 
 		data := Data{
-			Problem:   "",
-			CantData:  0,
-			MinNumber: 0,
-			MaxNumber: 0,
-			OutPut:    "",
-			Kill:      true,
+			Problem:     "",
+			CantData:    0,
+			MinNumber:   0,
+			MaxNumber:   0,
+			OutPut_file: false,
+			OutPut_cmd:  false,
+			Kill:        true,
 		}
 
 		jsonData, err := json.Marshal(data)

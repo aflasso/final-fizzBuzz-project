@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"fmt"
 	"net"
 )
@@ -35,14 +36,21 @@ func Send_data(data []byte, connection net.Conn) error {
 func Recive_data(connect net.Conn) ([]byte, error) {
 
 	buffer := make([]byte, 1024)
+	var result bytes.Buffer
 
-	n, err := connect.Read(buffer)
+	for {
+		n, err := connect.Read(buffer)
+		if err != nil {
+			return nil, fmt.Errorf("error: %v", err)
+		}
 
-	if err != nil {
+		result.Write(buffer[:n])
 
-		return nil, fmt.Errorf("error: %v", err)
-
+		if bytes.Contains(buffer[:n], []byte{'\n'}) {
+			break
+		}
 	}
 
-	return buffer[:n], nil
+	return result.Bytes(), nil
+
 }

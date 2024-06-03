@@ -9,18 +9,18 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"reflect"
 
 	"github.com/spf13/cobra"
 )
 
 type Data struct {
-	Problem   string
-	CantData  int64
-	MinNumber int64
-	MaxNumber int64
-	OutPut    string
-	Kill      bool
+	Problem     string
+	CantData    int64
+	MinNumber   int64
+	MaxNumber   int64
+	OutPut_file bool
+	OutPut_cmd  bool
+	Kill        bool
 }
 
 type Result struct {
@@ -31,7 +31,8 @@ var problem string
 var cantData int64
 var minNumber int64
 var maxNumber int64
-var outPut string
+var outPut_file bool
+var outPut_cmd bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -49,12 +50,13 @@ to quickly create a Cobra application.`,
 
 		data := Data{
 
-			Problem:   problem,
-			CantData:  cantData,
-			MinNumber: minNumber,
-			MaxNumber: maxNumber,
-			OutPut:    outPut,
-			Kill:      false,
+			Problem:     problem,
+			CantData:    cantData,
+			MinNumber:   minNumber,
+			MaxNumber:   maxNumber,
+			OutPut_file: outPut_file,
+			OutPut_cmd:  outPut_cmd,
+			Kill:        false,
 		}
 
 		jsonData, err := json.Marshal(data)
@@ -93,19 +95,23 @@ to quickly create a Cobra application.`,
 
 		err = json.Unmarshal(data_recived, &result)
 
-		fmt.Println(string(data_recived))
-
 		if err != nil {
 			return fmt.Errorf("error deserializing JSON: %v", err)
 		}
 
-		fmt.Printf("Deserialized JSON: %+v\n", result)
+		if outPut_file {
 
-		fmt.Println(result.Result)
+			util.Write_by_arr(result.Result, "files/result.txt")
 
-		for _, item := range result.Result {
-			fmt.Println(item)
-			fmt.Println("Tipo de myVar:", reflect.TypeOf(item))
+		}
+
+		if outPut_cmd || (!outPut_file && !outPut_cmd) {
+
+			for _, item := range result.Result {
+
+				fmt.Println(item)
+
+			}
 
 		}
 
@@ -132,9 +138,11 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringVarP(&problem, "problem", "p", "FizzBuzz", "Problem to be resolved")
-	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 10, "amount of numbers")
+	rootCmd.Flags().StringVarP(&problem, "problem", "p", "Fibonacci", "Problem to be resolved")
+	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 1000, "amount of numbers")
 	rootCmd.Flags().Int64VarP(&minNumber, "min", "x", 0, "minimum number")
 	rootCmd.Flags().Int64VarP(&maxNumber, "max", "y", 100, "maximum number")
-	rootCmd.Flags().StringVarP(&outPut, "output", "o", "", "output file")
+	rootCmd.Flags().BoolVarP(&outPut_file, "file", "f", false, "output file")
+	rootCmd.Flags().BoolVarP(&outPut_cmd, "cmd", "c", false, "output cmd")
+
 }

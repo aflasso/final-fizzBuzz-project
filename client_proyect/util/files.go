@@ -51,3 +51,31 @@ func Read() string {
 
 	return first_line
 }
+
+func Write_by_arr(data []string, file_path string) {
+
+	file, err := os.Create(file_path)
+
+	if err != nil {
+
+		fmt.Println("error creating or opening file:", err)
+		return
+
+	}
+
+	defer file.Close()
+
+	for _, item := range data {
+
+		_, err = io.WriteString(file, item+"\n")
+
+		if err != nil {
+
+			fmt.Println("error at writing on the file: ", err)
+			return
+
+		}
+
+	}
+
+}
