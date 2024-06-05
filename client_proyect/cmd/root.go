@@ -21,10 +21,12 @@ type Data struct {
 	OutPut_file bool
 	OutPut_cmd  bool
 	Kill        bool
+	TestMode    bool
 }
 
 type Result struct {
 	Result []string
+	Error  string
 }
 
 var problem string
@@ -33,6 +35,7 @@ var minNumber int64
 var maxNumber int64
 var outPut_file bool
 var outPut_cmd bool
+var testMode bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -57,6 +60,16 @@ to quickly create a Cobra application.`,
 			OutPut_file: outPut_file,
 			OutPut_cmd:  outPut_cmd,
 			Kill:        false,
+			TestMode:    testMode,
+		}
+
+		if testMode {
+			jsonData, err := json.Marshal(data)
+			if err != nil {
+				return fmt.Errorf("error marshaling data: %v", err)
+			}
+			fmt.Fprintln(cmd.OutOrStdout(), string(jsonData))
+
 		}
 
 		jsonData, err := json.Marshal(data)
@@ -94,6 +107,10 @@ to quickly create a Cobra application.`,
 		var result Result
 
 		err = json.Unmarshal(data_recived, &result)
+
+		if result.Error != "" {
+			return fmt.Errorf("error: %v", result.Error)
+		}
 
 		if err != nil {
 			return fmt.Errorf("error deserializing JSON: %v", err)
@@ -138,11 +155,13 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringVarP(&problem, "problem", "p", "Fibonacci", "Problem to be resolved")
+	rootCmd.Flags().StringVarP(&problem, "problem", "p", "Prime", "Problem to be resolved")
 	rootCmd.Flags().Int64VarP(&cantData, "amount", "a", 1000, "amount of numbers")
 	rootCmd.Flags().Int64VarP(&minNumber, "min", "x", 0, "minimum number")
 	rootCmd.Flags().Int64VarP(&maxNumber, "max", "y", 100, "maximum number")
 	rootCmd.Flags().BoolVarP(&outPut_file, "file", "f", false, "output file")
 	rootCmd.Flags().BoolVarP(&outPut_cmd, "cmd", "c", false, "output cmd")
+
+	rootCmd.Flags().BoolVar(&testMode, "test-mode", false, "enable test mode") // Añadir esta línea
 
 }

@@ -1,0 +1,10 @@
+1 prime
+2 prime
+3 prime
+4 cuadratic semiprime
+5 prime
+6 semiprime
+7 prime
+8 8
+9 cuadratic semiprime
+10 semiprime

@@ -1,5 +1,6 @@
 import base64
 import os
+import signal
 from flask import Flask, request, jsonify
 import sys
 import random
@@ -50,8 +51,8 @@ def create_app(test_config=None):
 
             json_data = json.loads(decrypted_data)
 
-            # print(encrypted_data)
-            # print(json_data)
+            print(encrypted_data)
+            print(json_data)
             
             desc_random = random.choice((0,1))
             random_numbers = None
@@ -60,12 +61,12 @@ def create_app(test_config=None):
                 distribution = NormalRandomDistribution()
             else:
                 distribution = UniformRandomDistribution()
-
-            mean = (json_data["MinNumber"] + json_data["MaxNumber"])/2
-
-            scale = abs(json_data["MaxNumber"] - json_data["MinNumber"]) / 6
-
-            random_numbers = distribution.get_numbers(mean, scale, json_data["CantData"])
+            
+            if json_data["TestMode"]:
+                random_numbers = [1,2,3,4,5,6,7,8,9,10]
+            
+            else:
+                random_numbers = distribution.get_numbers(json_data["MinNumber"], json_data["MaxNumber"], json_data["CantData"])
 
             encrypted_session_key = cy.get_encrpyted_session_key(session_key)
 
@@ -80,6 +81,8 @@ def create_app(test_config=None):
                             "encrypted_session_key": encrypted_session_key,
                             "encrypted_data": encrypted_response_data
                         })
+
+            # return jsonify({"Numbers": random_numbers})
         
         except Exception as e:
             return str(e), 400
@@ -87,5 +90,5 @@ def create_app(test_config=None):
     return app
 
 def shutdown_server():
-
-    sys.exit()
+    pid = os.getpid()
+    os.kill(pid, signal.SIGINT)

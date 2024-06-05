@@ -5,9 +5,9 @@ import traceback
 import requests
 from util.problem_factory.creator_fibonacci import CreatorFibonacci
 from util.problem_factory.creator_fizzBuzz import CreatorFizzBuzz
+from util.problem_factory.creator_primeVerifier import CreatorPrimeClasifier
 from util import cryptography as cy
 
-import util.log
 import logging
 
 class Socket():
@@ -29,11 +29,10 @@ class Socket():
 
         while flag:
            
-
             try:
                 connection, client_address = server_socket.accept()
 
-                logging.info("Connection established with", client_address)
+                logging.info("Connection established with: %s", client_address)
 
                 data = connection.recv(1024)
 
@@ -51,20 +50,24 @@ class Socket():
 
                         response_server = requests.get('http://localhost:5000/shutdown')
 
-                        if response_server.status_code == 200:
-                            connection.sendall("Shuting down everything".encode('utf-8'))
-                            flag = False
-
-                            logging.info("Data server shutdowned")
-                            logging.info("Problem solver shutdowned")
-                        else:
-                            connection.sendall("error shuting down data server".encode('utf-8'))
-                            logging.error("Error shutting down data server")
+                        json_result = {"Result": [], "Error": "error shuting down data server"}
+                        connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
+                        logging.error("Error shutting down data server")
                     
+                    except  requests.exceptions.ConnectionError as e:
+                        json_result = {"Result": [], "Error": "Shuting down everything"}
+                        connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
+                        flag = False
+
+                        logging.info("Data server shutdowned")
+                        logging.info("Problem solver shutdowned")
+
                     except requests.exceptions.RequestException as e:
-                        connection.sendall(f"Error connecting to data server".encode('utf-8'))
+
+                        json_result = {"Result": [], "Error": f"Error connecting to data server: {e}"}
+                        connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
                         logging.error("Error connecting to data server")
-                
+                    
                 else:
                     numbers_server = None
 
@@ -109,29 +112,37 @@ class Socket():
                             problem = createProblem(recived_json["Problem"])
 
                             if problem == None:
-                                connection.sendall("that is not a handled problem".encode('utf-8'))
+                                
+                                json_result = {"Result": [], "Error": "that is not a handled problem"}
+                                connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
                                 logging.error("Error solving problem")
 
                             else:
                                 result = problem.solve_problem(json_decrypted_response["Numbers"])
                                 logging.info("Problem solved")
 
-                                json_result = {"Result": result}
-                                connection.sendall(json.dumps(json_result).encode('utf-8'))
+                                json_result = {"Result": result, "Error": ""}
+                                print(json_result)
+                                connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
                                 logging.info("Solution send to client")
 
+
                         else:
-                            connection.sendall(f"error getting the numbers: {response.text}".encode('utf-8'))
+
+                            json_result = {"Result": [], "Error": f"error getting the numbers: {response.text}"}
+                            connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
                             logging.error("Error getting the numbers - ", response.text)
                     
                     except requests.exceptions.RequestException as e:
-                        connection.sendall(f"Error connecting to data server".encode('utf-8'))
+
+                        json_result = {"Result": [], "Error": "Error connecting to data server"}
+                        connection.sendall((json.dumps(json_result) + '\n').encode('utf-8'))
                         logging.error("Error connecting to data server")
 
             except Exception as e:
                 print(f"Error general: {e}")
                 traceback.print_exc()
-                logging.error("Error loading ssocket")
+                logging.error("Error loading socket")
 
             
             finally:
@@ -139,10 +150,13 @@ class Socket():
 
 def createProblem(problem):
 
-    if problem == "FizzBuzz":
-        return CreatorFizzBuzz()
+    # if problem == "FizzBuzz":
+    #     return CreatorFizzBuzz()
     
-    if problem == "Fibonacci":
-        return CreatorFibonacci()
+    # if problem == "Fibonacci":
+    #     return CreatorFibonacci()
+    
+    # if problem == "Prime":
+    #     return CreatorPrimeClasifier()
     
     return None

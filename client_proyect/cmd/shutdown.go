@@ -87,8 +87,17 @@ to quickly create a Cobra application.`,
 
 		}
 
-		response := string(data_recived)
-		fmt.Println("Respuesta del servidor:", response)
+		var result Result
+
+		err = json.Unmarshal(data_recived, &result)
+
+		if result.Error != "" {
+			fmt.Printf("%v", result.Error)
+		}
+
+		if err != nil {
+			return fmt.Errorf("error deserializing JSON: %v", err)
+		}
 
 		return nil
 

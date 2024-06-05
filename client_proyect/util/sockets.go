@@ -28,8 +28,6 @@ func Send_data(data []byte, connection net.Conn) error {
 		return fmt.Errorf("error sendind data: %v", err)
 	}
 
-	fmt.Println("Datos enviados al servidor: ", string(data))
-
 	return nil
 }
 
