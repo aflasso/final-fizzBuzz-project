@@ -43,6 +43,8 @@ def create_app(test_config=None):
         encrypted_session_key = request_data["encrypted_session_key"]
         encrypted_data = request_data["encrypted_data"]
 
+        print("Encrypted response from ProblemSolver:", request_data)
+
         try:
 
             session_key = cy.decrypt_data(encrypted_session_key, cy.get_private_server_key())
@@ -51,9 +53,7 @@ def create_app(test_config=None):
 
             json_data = json.loads(decrypted_data)
 
-            print(encrypted_data)
-            print(json_data)
-            
+
             desc_random = random.choice((0,1))
             random_numbers = None
 
@@ -76,6 +76,11 @@ def create_app(test_config=None):
             response_data = json.dumps(response_json)
 
             encrypted_response_data = cy.encrypt_with_session_key(response_data, session_key)
+
+            print("Encrypted response to ProblemSolver:", {
+                            "encrypted_session_key": encrypted_session_key,
+                            "encrypted_data": encrypted_response_data
+                        })
 
             return jsonify({
                             "encrypted_session_key": encrypted_session_key,

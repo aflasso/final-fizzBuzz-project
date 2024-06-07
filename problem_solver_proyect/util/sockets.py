@@ -88,6 +88,8 @@ class Socket():
                             "encrypted_data": encrypted_json
                         }
 
+                        print(data_to_send)
+
 
                         response = requests.post('http://localhost:5000/numbers', json=data_to_send)
 
@@ -102,6 +104,7 @@ class Socket():
                             response_data = response.json()
                             encrypted_session_key = response_data["encrypted_session_key"]
                             encrypted_data = response_data["encrypted_data"]
+
 
                             session_key = cy.decrypt_data(encrypted_session_key, cy.get_private_client_key())
                             print("Encrypted response from server:", response_data)
