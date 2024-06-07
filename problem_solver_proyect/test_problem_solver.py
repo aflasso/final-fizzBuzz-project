@@ -1,3 +1,4 @@
+from util.problem_factory.creator_primeVerifier import CreatorPrimeClasifier
 from util.problem_factory.creator_fizzBuzz import CreatorFizzBuzz
 from util.problem_factory.creator_fibonacci import CreatorFibonacci
 from util.sockets import createProblem
@@ -7,15 +8,15 @@ import random
 
 @pytest.fixture
 def fibonacci():
-    createProblem("Fibonacci")
+    return createProblem("Fibonacci")
 
 @pytest.fixture
 def fizzBuzz():
-    createProblem("FizzBuzz")
+    return createProblem("FizzBuzz")
 
 @pytest.fixture
 def prime():
-    createProblem("Prime")
+    return createProblem("Prime")
 
 
 def test_facthoy_method(fizzBuzz, fibonacci):
@@ -28,7 +29,7 @@ def test_facthoy_method(fizzBuzz, fibonacci):
     assert isinstance(problem, CreatorFibonacci)
 
     problem = createProblem("Prime")
-    assert isinstance(problem, CreatorFibonacci)
+    assert isinstance(problem, CreatorPrimeClasifier)
 
 
 

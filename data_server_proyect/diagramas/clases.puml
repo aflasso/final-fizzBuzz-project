@@ -1,0 +1,41 @@
+@startuml
+
+interface INumberRandomSolver{
+    +get_numbers(self, min, max, cant)
+}
+
+class NormalRandomDistribution{
+    +get_numbers(self, min, max, cant)
+}
+
+class UniformRandomDistribution{
+    +get_numbers(self, min, max, cant)
+}
+
+NormalRandomDistribution ..|> INumberRandomSolver
+UniformRandomDistribution ..|> INumberRandomSolver
+
+class cryptography{
+    get_public_server_key()
+    get_private_client_key()
+    encrypt_data(data, public_key)
+    decrypt_data(encrypted_data, private_key)
+    get_session_key()
+    get_encrpyted_session_key(session_key)
+encrypt_with_session_key(data, session_key)
+   decrypt_with_session_key(encrypted_data, session_key)
+
+}
+
+
+class Flask {
+
+    run()
+
+}
+
+Flask -- cryptography
+
+Flask -- INumberRandomSolver
+
+@enduml

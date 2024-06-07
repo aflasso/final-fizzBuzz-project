@@ -69,7 +69,7 @@ to quickly create a Cobra application.`,
 				return fmt.Errorf("error marshaling data: %v", err)
 			}
 			fmt.Fprintln(cmd.OutOrStdout(), string(jsonData))
-
+			// return nil
 		}
 
 		jsonData, err := json.Marshal(data)

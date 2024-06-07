@@ -4,8 +4,8 @@ YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
 # Assigning default file names
-command="./" #If the code is not compiled, use here the interpreter
-executable="client"
+command="go run " #If the code is not compiled, use here the interpreter
+executable="client.go"
 test_flag=" -f --test-mode"
 expected_output="expected_output.txt"
 generated_output="files/result.txt"
@@ -35,6 +35,6 @@ if [ ! -f "$executable" ]; then
 fi
 
 echo -e "Invoking $command$executable$test_flag"
-$command$executable$test_flag > $generated_output
+$command$executable$test_flag
 
 bash file_compare.sh $expected_output $generated_output $diff_output

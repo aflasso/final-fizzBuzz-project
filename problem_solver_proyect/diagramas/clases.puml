@@ -1,0 +1,78 @@
+@startuml
+interface IProblemSolver {
+    + solve_problem(data)
+}
+
+class PrimeClassifier  {
+    + compute_results(data: List[int])
+    
+prime_classifier(number: int)
+solve_problem(data)
+prime_classifier(num)
+is_prime(num)
+is_semiprime(num)
+is_cuadratic_semiprime(num)
+}
+
+class Fizzbuzz  {
+    + solve_problem(data)
+    
+__fizzbuzz(number)
+}
+
+class FibonacciVerifier  {
+    + solve_problem(data)
+    
+is_fibonacci(number)
+}
+
+interface IProblemCreator {
+    + factory_method(): IProblemSolver
+    + solve_problem(data)
+}
+
+class CreatorPrimeVerifier {
+    + factory_method(): IProblemSolver
+}
+
+class CreatorFizzBuzz  {
+    + factory_method(): IProblemSolver
+}
+
+class CreatorFibonacciVerifier  {
+    + factory_method(): IProblemSolver
+}
+
+
+class cryptography{
+    get_public_server_key()
+    get_private_client_key()
+    encrypt_data(data, public_key)
+    decrypt_data(encrypted_data, private_key)
+    get_session_key()
+    get_encrpyted_session_key(session_key)
+encrypt_with_session_key(data, session_key)
+   decrypt_with_session_key(encrypted_data, session_key)
+
+}
+
+
+class Socket {
+    
+    start_server()
+
+}
+IProblemSolver -- IProblemCreator
+
+IProblemCreator -- Socket
+
+cryptography -- Socket
+
+IProblemSolver <|.. PrimeClassifier
+IProblemSolver <|.. Fizzbuzz
+IProblemSolver <|.. FibonacciVerifier
+
+IProblemCreator <|.. CreatorPrimeVerifier
+IProblemCreator <|.. CreatorFizzBuzz
+IProblemCreator <|.. CreatorFibonacciVerifier
+@enduml

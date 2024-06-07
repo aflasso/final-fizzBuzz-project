@@ -1,0 +1,39 @@
+@startuml
+actor Client
+boundary ProblemSolver
+boundary DataServer
+
+Client -> ProblemSolver: Connect
+Client -> ProblemSolver: Send data (problem, cantData, minNumber, maxNumber, Kill)
+activate ProblemSolver
+
+alt Kill is True
+    ProblemSolver -> DataServer: Request shutdown
+    ProblemSolver -> Client: Send shutdown message
+    deactivate ProblemSolver
+else Kill is False
+    ProblemSolver -> ProblemSolver: Generate session key
+    ProblemSolver -> ProblemSolver: Encrypt session key
+    ProblemSolver -> ProblemSolver: Encrypt received data
+    ProblemSolver -> DataServer: POST /numbers (encrypted_session_key, encrypted_data)
+    activate DataServer
+    deactivate DataServer
+
+    alt Response is 200 OK
+        ProblemSolver -> ProblemSolver: Decrypt received session key
+        ProblemSolver -> ProblemSolver: Decrypt received data
+        ProblemSolver -> ProblemSolver: Parse decrypted data to JSON
+        ProblemSolver -> ProblemSolver: Create problem instance
+        alt Problem not handled
+            ProblemSolver -> Client: Send error message
+        else Problem handled
+            ProblemSolver -> Problem: solve_problem(Numbers)
+            Problem -> ProblemSolver: return result
+            ProblemSolver -> Client: Send result
+        end
+    else Response is error
+        ProblemSolver -> Client: Send error message
+    end
+end
+
+@enduml

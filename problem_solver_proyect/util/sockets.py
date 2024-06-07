@@ -8,6 +8,8 @@ from util.problem_factory.creator_fizzBuzz import CreatorFizzBuzz
 from util.problem_factory.creator_primeVerifier import CreatorPrimeClasifier
 from util import cryptography as cy
 
+from util import log
+
 import logging
 
 class Socket():
@@ -150,13 +152,13 @@ class Socket():
 
 def createProblem(problem):
 
-    # if problem == "FizzBuzz":
-    #     return CreatorFizzBuzz()
+    if problem == "FizzBuzz":
+        return CreatorFizzBuzz()
     
-    # if problem == "Fibonacci":
-    #     return CreatorFibonacci()
+    if problem == "Fibonacci":
+        return CreatorFibonacci()
     
-    # if problem == "Prime":
-    #     return CreatorPrimeClasifier()
+    if problem == "Prime":
+        return CreatorPrimeClasifier()
     
-    return None
+    return None 
